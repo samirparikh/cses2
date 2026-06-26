@@ -67,6 +67,52 @@ weird_algorithm
 On a failure it prints the input, the expected output, and what your program
 actually produced.
 
+## Adding and testing a new solution
+
+The full workflow, from an empty folder to a passing solution:
+
+1. **Scaffold the problem.** Pass the CSES category and problem name. This
+   creates the folder, a starter `.c` file, and an empty `tests/` directory:
+
+   ```bash
+   ./cses new "Sorting and Searching" "Distinct Numbers"
+   # created sorting_and_searching/distinct_numbers/distinct_numbers.c
+   ```
+
+   Names are slugified, so `"Sorting and Searching"` becomes
+   `sorting_and_searching/` and `"Distinct Numbers"` becomes
+   `distinct_numbers/`.
+
+2. **Write your solution.** Open the generated `.c` file and fill in `main()`.
+   Read input from **stdin** with `scanf`/`getchar` and print the answer to
+   **stdout** with `printf` — no file handling. (`template.c` shows the common
+   read patterns.)
+
+   ```bash
+   $EDITOR sorting_and_searching/distinct_numbers/distinct_numbers.c
+   ```
+
+3. **Add test cases.** Put matching `N.in` / `N.out` pairs in the problem's
+   `tests/` folder. The quickest start is to copy the example from the problem
+   statement: paste its sample input into `tests/1.in` and the expected output
+   into `tests/1.out`. (For the full official cases, see the next section.)
+
+   ```
+   sorting_and_searching/distinct_numbers/tests/
+   ├── 1.in
+   └── 1.out
+   ```
+
+4. **Test it.** Point `./cses test` at the problem folder (or its `.c` file).
+   It compiles your solution and runs it against every case in `tests/`:
+
+   ```bash
+   ./cses test sorting_and_searching/distinct_numbers
+   ```
+
+   Iterate on steps 2–4 until every case passes. To check your work against the
+   whole repo at once, run `./cses test` with no path.
+
 ## Adding the official CSES test files
 
 Some problems on CSES have a **"Tests"** download (a `.zip`) on the task page.
