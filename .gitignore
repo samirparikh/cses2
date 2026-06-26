@@ -1,0 +1,11 @@
+# Compiled solution binaries produced by ./cses (hidden, per-problem)
+.*.bin
+
+# Generic C build artifacts
+# (note: do NOT ignore *.out — CSES expected-output test files use that suffix)
+*.o
+a.out
+
+# Editor / OS noise
+*.swp
+.DS_Store

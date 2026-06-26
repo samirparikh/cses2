@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+#
+# cses — build & test harness for CSES solutions written in C.
+#
+# CSES problems read input from stdin and write the answer to stdout, so the
+# whole "test framework" is just: compile the .c file, feed it each input file,
+# and compare its output to the expected output file. You never have to write
+# code to open or parse files — focus on the algorithm.
+#
+# Usage:
+#   ./cses test [PATH]      Compile & test a problem (a dir or a .c file).
+#                           With no PATH, tests every problem in the repo.
+#   ./cses run  PATH        Compile & run a problem, reading from your keyboard
+#                           (or a piped file) so you can experiment by hand.
+#   ./cses new  "Category" "Problem Name"
+#                           Scaffold a new problem folder + starter .c + tests/.
+#
+# Test files live in the problem's tests/ folder as matching pairs:
+#   tests/1.in  tests/1.out   tests/2.in  tests/2.out   ...
+#
+# Environment overrides:
+#   TOOLBOX  toolbox container that has gcc      (default: gcc)
+#   CC       compiler                            (default: gcc)
+#   CFLAGS   compiler flags                      (default below)
+#
+set -euo pipefail
+
+TOOLBOX=${TOOLBOX:-gcc}
+CC=${CC:-gcc}
+CFLAGS=${CFLAGS:--O2 -std=c17 -Wall -Wextra}
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# --- colors (disabled when not a terminal) ----------------------------------
+if [ -t 1 ]; then
+  BOLD=$'\e[1m'; RED=$'\e[31m'; GREEN=$'\e[32m'; YELLOW=$'\e[33m'; DIM=$'\e[2m'; RST=$'\e[0m'
+else
+  BOLD=""; RED=""; GREEN=""; YELLOW=""; DIM=""; RST=""
+fi
+
+die() { echo "${RED}error:${RST} $*" >&2; exit 1; }
+
+# Run a command inside the toolbox container that holds the compiler.
+in_toolbox() { toolbox run --container "$TOOLBOX" "$@"; }
+
+# Turn "Sorting and Searching" -> "sorting_and_searching"
+slug() {
+  echo "$1" | tr '[:upper:]' '[:lower:]' \
+    | sed -E 's/[^a-z0-9]+/_/g; s/^_+//; s/_+$//'
+}
+
+# Find the single .c file in a problem directory.
+source_in() {
+  local dir=$1 srcs
+  srcs=$(find "$dir" -maxdepth 1 -name '*.c' | sort)
+  [ -n "$srcs" ] || die "no .c file found in $dir"
+  [ "$(echo "$srcs" | wc -l)" -eq 1 ] || die "multiple .c files in $dir; expected one"
+  echo "$srcs"
+}
+
+# Compile the problem's source; echoes the path to the built binary.
+compile() {
+  local src=$1 dir base bin
+  dir=$(dirname "$src"); base=$(basename "$src" .c)
+  bin="$dir/.$base.bin"
+  # shellcheck disable=SC2086
+  in_toolbox "$CC" $CFLAGS "$src" -o "$bin" || die "compilation failed: $src"
+  echo "$bin"
+}
+
+# Normalize program/expected output for comparison: strip trailing whitespace
+# on every line and drop trailing blank lines. (CSES grades token-by-token, so
+# this avoids false failures from a stray space or newline.)
+normalize() { sed -E 's/[[:space:]]+$//' | sed -E -e :a -e '/^\s*$/{$d;N;ba}'; }
+
+# Test one problem directory. Returns non-zero if any case fails.
+test_dir() {
+  local dir=$1 src bin name passed=0 failed=0 had=0
+  dir=${dir%/}
+  src=$(source_in "$dir")
+  name=$(basename "$dir")
+  printf '%s%s%s\n' "$BOLD" "$name" "$RST"
+
+  bin=$(compile "$src")
+
+  shopt -s nullglob
+  local infile
+  for infile in "$dir"/tests/*.in; do
+    had=1
+    local case_name expected actual
+    case_name=$(basename "$infile" .in)
+    expected="$dir/tests/$case_name.out"
+    if [ ! -f "$expected" ]; then
+      printf '  %s SKIP%s case %s (no %s.out)\n' "$YELLOW" "$RST" "$case_name" "$case_name"
+      continue
+    fi
+    actual=$("$bin" < "$infile" 2>/dev/null || true)
+    if diff -q <(printf '%s\n' "$actual" | normalize) <(printf '%s\n' "$(cat "$expected")" | normalize) >/dev/null; then
+      printf '  %sPASS%s  case %s\n' "$GREEN" "$RST" "$case_name"
+      passed=$((passed+1))
+    else
+      printf '  %sFAIL%s  case %s\n' "$RED" "$RST" "$case_name"
+      printf '        %sinput:%s    %s\n' "$DIM" "$RST" "$(tr '\n' ' ' < "$infile")"
+      printf '        %sexpected:%s %s\n' "$DIM" "$RST" "$(printf '%s' "$(cat "$expected")" | tr '\n' ' ')"
+      printf '        %sgot:%s      %s\n' "$DIM" "$RST" "$(printf '%s' "$actual" | tr '\n' ' ')"
+      failed=$((failed+1))
+    fi
+  done
+  shopt -u nullglob
+
+  if [ "$had" -eq 0 ]; then
+    printf '  %sno test files in %s/tests/%s\n' "$YELLOW" "$name" "$RST"
+    return 0
+  fi
+  printf '  %s%d passed, %d failed%s\n' "$BOLD" "$passed" "$failed" "$RST"
+  [ "$failed" -eq 0 ]
+}
+
+# Find every problem directory (a dir containing a .c file), excluding repo root.
+all_problem_dirs() {
+  find "$REPO_ROOT" -mindepth 2 -maxdepth 3 -name '*.c' -printf '%h\n' | sort -u
+}
+
+cmd_test() {
+  local target=${1:-}
+  if [ -z "$target" ]; then
+    local dir rc=0 total=0 ok=0
+    while IFS= read -r dir; do
+      total=$((total+1))
+      if test_dir "$dir"; then ok=$((ok+1)); else rc=1; fi
+      echo
+    done < <(all_problem_dirs)
+    printf '%s== %d/%d problems fully passing ==%s\n' "$BOLD" "$ok" "$total" "$RST"
+    return $rc
+  fi
+  [ -e "$target" ] || die "no such path: $target"
+  [ -f "$target" ] && target=$(dirname "$target")
+  test_dir "$target"
+}
+
+cmd_run() {
+  local target=${1:-} src bin
+  [ -n "$target" ] || die "usage: cses run PATH"
+  [ -e "$target" ] || die "no such path: $target"
+  [ -f "$target" ] && target=$(dirname "$target")
+  src=$(source_in "${target%/}")
+  bin=$(compile "$src")
+  echo "${DIM}running $src — type input, Ctrl-D when done${RST}" >&2
+  "$bin"
+}
+
+cmd_new() {
+  local category=${1:-} problem=${2:-}
+  [ -n "$category" ] && [ -n "$problem" ] || die 'usage: cses new "Category" "Problem Name"'
+  local cdir pdir base dir
+  cdir=$(slug "$category"); base=$(slug "$problem")
+  dir="$REPO_ROOT/$cdir/$base"
+  [ -d "$dir" ] && die "already exists: $dir"
+  mkdir -p "$dir/tests"
+  cat > "$dir/$base.c" <<EOF
+#include <stdio.h>
+
+// $problem
+// https://cses.fi/problemset/
+//
+// Read from stdin, write the answer to stdout.
+
+int main(void) {
+
+    return 0;
+}
+EOF
+  echo "${GREEN}created${RST} $dir/$base.c"
+  echo "  drop test files into $dir/tests/ as 1.in / 1.out, then: ./cses test $cdir/$base"
+}
+
+usage() {
+  sed -n '2,28p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+}
+
+main() {
+  local sub=${1:-}
+  case "$sub" in
+    test) shift; cmd_test "${1:-}";;
+    run)  shift; cmd_run "${1:-}";;
+    new)  shift; cmd_new "${1:-}" "${2:-}";;
+    ""|-h|--help|help) usage;;
+    *)    die "unknown command '$sub' (try: test, run, new)";;
+  esac
+}
+
+main "$@"
