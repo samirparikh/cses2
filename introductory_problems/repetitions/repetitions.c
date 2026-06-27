@@ -28,14 +28,37 @@ int read_input(char *x, int size) {
 int main(void) {
     char x[ARRAY_SIZE];
 
-    int len = read_input(x, ARRAY_SIZE);
+    signed long len = read_input(x, ARRAY_SIZE);
     if (len < 0) {
         return 0;
     }
 
-    printf("x[0] = %c\n", x[0]);
-    printf("x[1] = %c\n", x[1]);
-    printf("x[2] = %c\n", x[2]);
+    // printf("x[0] = %c\n", x[0]);
+    // printf("x[1] = %c\n", x[1]);
+    // printf("x[2] = %c\n", x[2]);
+
+    printf("value of len is %ld\n", len);
+
+    long max_length = 0;
+    for (long currentElement = 0; currentElement < len - 1; currentElement++) {
+        //printf("x[%ld] = %c\n", currentElement, x[currentElement]);
+        long currentLength = 0;
+        long nextElement = currentElement + 1;
+        while (nextElement < len) {
+            printf("comparing %c with %c\n", x[currentElement], x[nextElement]);
+            if (x[currentElement] == x[nextElement]) {
+                printf("found a match!\n");
+                currentLength++;
+                nextElement++;
+            }
+            else {
+                if (currentLength > max_length)
+                    max_length = currentLength;
+                break;
+            }
+        }
+    }
+    printf("the max repeating length is %ld", max_length);
 
     return 0;
 }
