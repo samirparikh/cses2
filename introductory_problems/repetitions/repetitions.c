@@ -33,23 +33,32 @@ int main(void) {
         return 0;
     }
 
-    // printf("x[0] = %c\n", x[0]);
-    // printf("x[1] = %c\n", x[1]);
-    // printf("x[2] = %c\n", x[2]);
-
     printf("value of len is %ld\n", len);
 
     long max_length = 0;
     for (long currentElement = 0; currentElement < len - 1; currentElement++) {
         //printf("x[%ld] = %c\n", currentElement, x[currentElement]);
-        long currentLength = 0;
+        long currentLength = 1;
         long nextElement = currentElement + 1;
         while (nextElement < len) {
-            printf("comparing %c with %c\n", x[currentElement], x[nextElement]);
+            printf("-------------------\n");
+            printf("comparing %ld:%c with %ld:%c\n",
+                    currentElement, x[currentElement], nextElement, x[nextElement]);
             if (x[currentElement] == x[nextElement]) {
-                printf("found a match!\n");
+                printf("found a match! ");
                 currentLength++;
                 nextElement++;
+                printf("current length is %ld\n", currentLength);
+                // are we now at the end of the string?
+                printf("%ld and %ld\n", nextElement, len);
+                if (nextElement == len) {
+                     printf("we should be done at this point\n");
+                     if (currentLength > max_length)
+                         max_length = currentLength;
+                     currentElement = len - 1;
+                }
+                // else
+                //     nextElement++;
             }
             else {
                 if (currentLength > max_length)
