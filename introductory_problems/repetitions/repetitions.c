@@ -37,7 +37,6 @@ int main(void) {
 
     long max_length = 0;
     for (long currentElement = 0; currentElement < len - 1; currentElement++) {
-        //printf("x[%ld] = %c\n", currentElement, x[currentElement]);
         long currentLength = 1;
         long nextElement = currentElement + 1;
         while (nextElement < len) {
@@ -57,8 +56,6 @@ int main(void) {
                          max_length = currentLength;
                      currentElement = len - 1;
                 }
-                // else
-                //     nextElement++;
             }
             else {
                 if (currentLength > max_length)
