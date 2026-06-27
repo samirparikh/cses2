@@ -14,13 +14,13 @@
 // Read from stdin, write the answer to stdout.
 
 int main(void) {
-    printf("Hello world!\n");
-    int n, x, sum = 0;
-    scanf("%d", &n);
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &x);
-        sum += x;
+    unsigned long n, x = 0;
+    scanf("%lu", &n);
+    unsigned long long sum = n * (n + 1) / 2;
+    for (unsigned long i = 0; i < n - 1; i++) {
+        scanf("%lu", &x);
+        sum -= x;
     }
-    printf("sum is %d\n", sum);
+    printf("%llu", sum);
     return 0;
 }
