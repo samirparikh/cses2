@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-enum { ARRAY_SIZE = 100 };
+enum { ARRAY_SIZE = 1000000 };
 
 // Reads a line into x, strips the trailing newline.
 // Returns the length of the string, or -1 on EOF/error.
@@ -33,25 +33,25 @@ int main(void) {
         return 0;
     }
 
-    printf("value of len is %ld\n", len);
+    // printf("value of len is %ld\n", len);
 
     long max_length = 0;
     for (long currentElement = 0; currentElement < len - 1; currentElement++) {
         long currentLength = 1;
         long nextElement = currentElement + 1;
         while (nextElement < len) {
-            printf("-------------------\n");
-            printf("comparing %ld:%c with %ld:%c\n",
-                    currentElement, x[currentElement], nextElement, x[nextElement]);
+            // printf("-------------------\n");
+            // printf("comparing %ld:%c with %ld:%c\n",
+            //         currentElement, x[currentElement], nextElement, x[nextElement]);
             if (x[currentElement] == x[nextElement]) {
-                printf("found a match! ");
+                // printf("found a match! ");
                 currentLength++;
                 nextElement++;
-                printf("current length is %ld\n", currentLength);
+                // printf("current length is %ld\n", currentLength);
                 // are we now at the end of the string?
-                printf("%ld and %ld\n", nextElement, len);
+                // printf("%ld and %ld\n", nextElement, len);
                 if (nextElement == len) {
-                     printf("we should be done at this point\n");
+                     // printf("we should be done at this point\n");
                      if (currentLength > max_length)
                          max_length = currentLength;
                      currentElement = len - 1;
@@ -64,7 +64,8 @@ int main(void) {
             }
         }
     }
-    printf("the max repeating length is %ld", max_length);
+    // printf("the max repeating length is %ld", max_length);
+    printf("%ld", max_length);
 
     return 0;
 }
