@@ -1,7 +1,4 @@
 // Repetitions
-// https://cses.fi/problemset/
-//
-// Read from stdin, write the answer to stdout.
 
 #include <stdio.h>
 #include <string.h>
@@ -38,26 +35,17 @@ int main(void) {
         return 0;
     }
 
-    printf("value of len is %ld\n", len);
-
     long max_length = 1;
-    long increment = 1;
-    for (long currentElement = 0; currentElement < len - 1; currentElement += increment) {
+    long currentElement = 0;
+    while (currentElement < len - 1) {
         long currentLength = 1;
         long nextElement = currentElement + 1;
         while (nextElement < len) {
-            printf("-------------------\n");
-            printf("comparing %ld:%c with %ld:%c\n",
-                currentElement, x[currentElement], nextElement, x[nextElement]);
             if (x[currentElement] == x[nextElement]) {
-                printf("found a match! ");
                 currentLength++;
                 nextElement++;
-                printf("current length is %ld\n", currentLength);
                 // are we now at the end of the string?
-                // printf("%ld and %ld\n", nextElement, len);
                 if (nextElement == len) {
-                     printf("we should be done at this point\n");
                      if (currentLength > max_length)
                          max_length = currentLength;
                      currentElement = len - 1;
@@ -66,11 +54,12 @@ int main(void) {
             else {
                 if (currentLength > max_length)
                     max_length = currentLength;
+                currentElement = nextElement;;
                 break;
             }
+            currentElement++;
         }
     }
-    // printf("the max repeating length is %ld", max_length);
     printf("%ld", max_length);
 
     return 0;
