@@ -46,6 +46,10 @@ die() { echo "${RED}error:${RST} $*" >&2; exit 1; }
 US=$'\x1f'
 RESULTS=()
 
+# Accumulated nanoseconds spent actually executing test binaries (excludes
+# compilation), summed across every case and reported by the summary.
+TEST_EXEC_NS=""
+
 # Squeeze a (possibly multi-line) value onto one line and truncate it so the
 # summary table stays aligned. Empty values render as a dim placeholder.
 fmt_cell() {
@@ -112,7 +116,10 @@ test_dir() {
       RESULTS+=("$name$US$case_name$US$(fmt_cell '(missing)')$US$(fmt_cell '')${US}SKIP")
       continue
     fi
+    printf '  %sexecuting test case %s...%s\n' "$DIM" "$case_name" "$RST"
+    local case_start_ns; case_start_ns=$(date +%s%N)
     actual=$("$bin" < "$infile" 2>/dev/null || true)
+    TEST_EXEC_NS=$(( ${TEST_EXEC_NS:-0} + $(date +%s%N) - case_start_ns ))
     local exp_text; exp_text=$(cat "$expected")
     if diff -q <(printf '%s\n' "$actual" | normalize) <(printf '%s\n' "$exp_text" | normalize) >/dev/null; then
       printf '  %sPASS%s  case %s\n' "$GREEN" "$RST" "$case_name"
@@ -120,7 +127,6 @@ test_dir() {
       passed=$((passed+1))
     else
       printf '  %sFAIL%s  case %s\n' "$RED" "$RST" "$case_name"
-      printf '        %sinput:%s    %s\n' "$DIM" "$RST" "$(tr '\n' ' ' < "$infile")"
       printf '        %sexpected:%s %s\n' "$DIM" "$RST" "$(printf '%s' "$exp_text" | tr '\n' ' ')"
       printf '        %sgot:%s      %s\n' "$DIM" "$RST" "$(printf '%s' "$actual" | tr '\n' ' ')"
       RESULTS+=("$name$US$case_name$US$(fmt_cell "$exp_text")$US$(fmt_cell "$actual")${US}FAIL")
@@ -177,9 +183,16 @@ print_summary() {
     "$GREEN" "$passed" "$RST$BOLD" \
     "$RED" "$failed" "$RST$BOLD" \
     "$YELLOW" "$skipped" "$RST"
+
+  if [ -n "$TEST_EXEC_NS" ]; then
+    local elapsed
+    elapsed=$(awk -v ns="$TEST_EXEC_NS" 'BEGIN { printf "%.2f", ns / 1e9 }')
+    printf '%s⏱  execution time: %ss%s\n' "$BOLD" "$elapsed" "$RST"
+  fi
 }
 
 cmd_test() {
+  TEST_EXEC_NS=0
   local target=${1:-}
   if [ -z "$target" ]; then
     local dir rc=0 total=0 ok=0
