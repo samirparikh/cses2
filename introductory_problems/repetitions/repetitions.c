@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-enum { ARRAY_SIZE = 1000000 };
+enum { ARRAY_SIZE = 1000001 };
 
 // Reads a line into x, strips the trailing newline.
 // Returns the length of the string, or -1 on EOF/error.
@@ -30,6 +30,11 @@ int main(void) {
 
     signed long len = read_input(x, ARRAY_SIZE);
     if (len < 0) {
+        return 0;
+    }
+
+    if (len == 1) {
+        printf("1");
         return 0;
     }
 
