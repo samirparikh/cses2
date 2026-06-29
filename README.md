@@ -2,7 +2,8 @@
 
 My solutions to the [CSES Problem Set](https://cses.fi/problemset/), written in C
 as a way to learn the language. Organized by problem category, with a tiny test
-harness so I can focus on algorithms instead of plumbing.
+harness so I can focus on algorithms instead of plumbing. Coding support provided
+by Claude Code and other AI assistants.
 
 ## Why this is simple
 
