@@ -134,4 +134,4 @@ problem statement's examples, which is what the Weird Algorithm folder does.
 | `CC`      | `gcc`                        | compiler                         |
 | `CFLAGS`  | `-O2 -std=c99 -Wall -Wextra` | compiler flags                   |
 
-For example, to see more warnings: `CFLAGS="-O2 -std=c17 -Wall -Wextra -Wpedantic" ./cses test`.
+For example, to see more warnings: `CFLAGS="-O2 -std=c99 -Wall -Wextra -Wpedantic" ./cses test`.
