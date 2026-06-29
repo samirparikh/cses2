@@ -8,7 +8,7 @@ Solutions to the [CSES Problem Set](https://cses.fi/problemset/) written in C as
 
 ## The `./cses` harness
 
-All builds and tests go through `./cses`, a bash script that shells out to `gcc`. `gcc` is provided by the Nix `devShell` in `flake.nix` — either via `nix develop` or automatically through the `.envrc` (`use flake`) when direnv is installed. Compiled binaries land at `<problem_dir>/.<name>.bin` (gitignored).
+All builds and tests go through `./cses`, a bash script that shells out to `gcc`. Compiled binaries land at `<problem_dir>/.<name>.bin` (gitignored).
 
 ```bash
 ./cses test <path>             # compile + run all tests/*.in for one problem
@@ -20,6 +20,21 @@ All builds and tests go through `./cses`, a bash script that shells out to `gcc`
 `<path>` can be either the problem directory or its `.c` file.
 
 Environment overrides: `CC` (default `gcc`), `CFLAGS` (default `-O2 -std=c99 -Wall -Wextra`).
+
+## NixOS dev environment
+
+`gcc` is **not installed globally**. It's provided by the Nix `devShell` defined in `flake.nix` and pinned via `flake.lock`. There are two ways to get `gcc` onto `PATH`:
+
+1. **`nix develop`** — enter an interactive shell with `gcc` available.
+2. **direnv** — the repo's `.envrc` contains `use flake`, so `cd`-ing in auto-loads the shell (after a one-time `direnv allow`).
+
+When running the harness from a non-interactive context where you can't rely on direnv (e.g. a Claude Code session that wasn't started inside the loaded shell), prefix commands with `nix develop --command`:
+
+```bash
+nix develop --command ./cses test introductory_problems/weird_algorithm
+```
+
+This is the safest way to invoke `./cses` from automation — if `gcc` is already on `PATH` (you're inside the shell) this is a near no-op; if not, Nix sets it up first.
 
 ## Repository layout
 
