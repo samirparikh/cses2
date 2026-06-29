@@ -8,7 +8,7 @@ Solutions to the [CSES Problem Set](https://cses.fi/problemset/) written in C as
 
 ## The `./cses` harness
 
-All builds and tests go through `./cses`, a bash script that compiles via `gcc` inside a [toolbox](https://containertoolbx.org/) container. Do not invoke `gcc` directly — the project assumes the toolbox path. Compiled binaries land at `<problem_dir>/.<name>.bin` (gitignored).
+All builds and tests go through `./cses`, a bash script that shells out to `gcc`. `gcc` is provided by the Nix `devShell` in `flake.nix` — either via `nix develop` or automatically through the `.envrc` (`use flake`) when direnv is installed. Compiled binaries land at `<problem_dir>/.<name>.bin` (gitignored).
 
 ```bash
 ./cses test <path>             # compile + run all tests/*.in for one problem
@@ -19,7 +19,7 @@ All builds and tests go through `./cses`, a bash script that compiles via `gcc` 
 
 `<path>` can be either the problem directory or its `.c` file.
 
-Environment overrides: `TOOLBOX` (default `gcc`), `CC` (default `gcc`), `CFLAGS` (default `-O2 -std=c99 -Wall -Wextra` in the script, though the README documents `-std=c17` — the script's `c99` is the actual default).
+Environment overrides: `CC` (default `gcc`), `CFLAGS` (default `-O2 -std=c99 -Wall -Wextra`).
 
 ## Repository layout
 

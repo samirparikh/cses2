@@ -19,13 +19,14 @@
 #   tests/1.in  tests/1.out   tests/2.in  tests/2.out   ...
 #
 # Environment overrides:
-#   TOOLBOX  toolbox container that has gcc      (default: gcc)
 #   CC       compiler                            (default: gcc)
 #   CFLAGS   compiler flags                      (default below)
 #
+# `gcc` is provided by the project's Nix devShell (see flake.nix). Enter it
+# with `nix develop`, or let direnv auto-load it via the .envrc.
+#
 set -euo pipefail
 
-TOOLBOX=${TOOLBOX:-gcc}
 CC=${CC:-gcc}
 CFLAGS=${CFLAGS:--O2 -std=c99 -Wall -Wextra}
 
@@ -61,9 +62,6 @@ fmt_cell() {
   printf '%s' "$s"
 }
 
-# Run a command inside the toolbox container that holds the compiler.
-in_toolbox() { toolbox run --container "$TOOLBOX" "$@"; }
-
 # Turn "Sorting and Searching" -> "sorting_and_searching"
 slug() {
   echo "$1" | tr '[:upper:]' '[:lower:]' \
@@ -85,7 +83,7 @@ compile() {
   dir=$(dirname "$src"); base=$(basename "$src" .c)
   bin="$dir/.$base.bin"
   # shellcheck disable=SC2086
-  in_toolbox "$CC" $CFLAGS "$src" -o "$bin" || die "compilation failed: $src"
+  "$CC" $CFLAGS "$src" -o "$bin" || die "compilation failed: $src"
   echo "$bin"
 }
 
@@ -196,8 +194,8 @@ cmd_test() {
   local target=${1:-}
   if [ -z "$target" ]; then
     local dir rc=0 total=0 ok=0
-    # Read on fd 3, not stdin: compilation runs `toolbox run`, which drains
-    # stdin and would otherwise swallow the rest of the directory list.
+    # Read on fd 3, not stdin: keeps the directory list safe from any command
+    # inside the loop body that might consume stdin.
     while IFS= read -r dir <&3; do
       total=$((total+1))
       if test_dir "$dir"; then ok=$((ok+1)); else rc=1; fi

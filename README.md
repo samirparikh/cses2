@@ -37,8 +37,11 @@ are matching pairs: `N.in` (input) and `N.out` (expected output).
 
 ## Usage
 
-The compiler lives in the `gcc` [toolbox](https://containertoolbx.org/) container,
-and `./cses` calls it through `toolbox run` automatically.
+The compiler comes from a Nix `devShell` defined in `flake.nix`. Enter it with
+`nix develop`, or — if you have [direnv](https://direnv.net/) — just `cd` into
+the repo and the `.envrc` (`use flake`) loads `gcc` onto your `PATH`
+automatically. The first `direnv allow` may take a moment while Nix fetches the
+shell; later entries are instant.
 
 ```bash
 # Test one problem (point at the folder or the .c file)
@@ -128,8 +131,7 @@ problem statement's examples, which is what the Weird Algorithm folder does.
 
 | Variable  | Default                      | Purpose                          |
 |-----------|------------------------------|----------------------------------|
-| `TOOLBOX` | `gcc`                        | toolbox container holding gcc    |
 | `CC`      | `gcc`                        | compiler                         |
-| `CFLAGS`  | `-O2 -std=c17 -Wall -Wextra` | compiler flags                   |
+| `CFLAGS`  | `-O2 -std=c99 -Wall -Wextra` | compiler flags                   |
 
 For example, to see more warnings: `CFLAGS="-O2 -std=c17 -Wall -Wextra -Wpedantic" ./cses test`.
