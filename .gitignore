@@ -9,3 +9,6 @@ a.out
 # Editor / OS noise
 *.swp
 .DS_Store
+
+# direnv cache (populated by `use flake`)
+.direnv/
