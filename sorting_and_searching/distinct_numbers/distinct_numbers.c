@@ -7,7 +7,7 @@ int main(void) {
 
     int n;
     int distinct = 0;
-    bool x[MAX_NUMBERS] = {false};
+    static bool x[MAX_NUMBERS] = {false};
 
 
     if (scanf("%d", &n) != 1) {
@@ -29,5 +29,5 @@ int main(void) {
         }
     }
 
-    printf("distinct = %d\n", distinct);
+    printf("%d\n", distinct);
 }
