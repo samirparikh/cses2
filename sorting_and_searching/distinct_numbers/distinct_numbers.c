@@ -38,10 +38,8 @@ int compare_ints(const void *a, const void *b)
 
 int main(void)
 {
-    // The array we want to sort.
-    int numbers[] = {42, 17, 5, 99, 23};
-
     int n;
+    int distinct = 1;
 
     if (scanf("%d", &n) != 1) {
         fprintf(stderr, "Invalid input\n");
@@ -57,34 +55,22 @@ int main(void)
         }
     }
 
-    // Compute the number of elements in the array.
-    //
-    // sizeof(numbers)        -> total bytes in the array
-    // sizeof(numbers[0])     -> bytes in one element
-    //
-    // Dividing gives the number of elements.
-    size_t count = sizeof(numbers) / sizeof(numbers[0]);
-
     /*
      * qsort() arguments:
      *
      *   numbers             Pointer to the first element.
-     *   count               Number of elements.
-     *   sizeof(numbers[0])  Size (in bytes) of each element.
+     *   n                   Number of elements.
+     *   sizeof(x[0])        Size (in bytes) of each element.
      *   compare_ints        Function used to compare elements.
      */
-    qsort(numbers, count, sizeof(numbers[0]), compare_ints);
-
-    // Print the sorted array.
-    for (size_t i = 0; i < count; i++)
-        printf("%d ", numbers[i]);
-
-    printf("\n");
-    printf("-------------------------\n");
-    //count = sizeof(x) / sizeof(x[0]);
     qsort(x, n, sizeof(x[0]), compare_ints);
-    for (int i = 0; i < n; i++) printf("%lld ", x[i]);
-    printf("\n");
+
+    for (int i = 1; i < n; i++) {
+        if (x[i] != x[i-1])
+            distinct++;
+    }
+
+    printf("%d", distinct);
 
     return 0;
 }
