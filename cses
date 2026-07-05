@@ -32,6 +32,10 @@ CFLAGS=${CFLAGS:--O2 -std=c99 -Wall -Wextra}
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Make shared headers under lib/ available to every problem, so solutions can
+# `#include "compare_ints.h"` instead of walking up with `../../lib/...`.
+CFLAGS="$CFLAGS -I$REPO_ROOT/lib"
+
 # --- colors (disabled when not a terminal) ----------------------------------
 if [ -t 1 ]; then
   BOLD=$'\e[1m'; RED=$'\e[31m'; GREEN=$'\e[32m'; YELLOW=$'\e[33m'; DIM=$'\e[2m'; RST=$'\e[0m'

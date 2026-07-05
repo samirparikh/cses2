@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../../lib/compare_ints.h"
+#include "compare_ints.h"
 
 int main(void)
 {
