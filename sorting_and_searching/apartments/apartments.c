@@ -1,7 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "compare_ints.h"
+int compare_long_longs(const void *a, const void *b)
+{
+    long long x = *(const long long *)a;
+    long long y = *(const long long *)b;
+    if (x < y) return -1;
+    if (x > y) return 1;
+    return 0;
+}
 
 int main(void) {
     int       num_applicants, num_apartments;
