@@ -4,19 +4,6 @@
 #define SNOWFLAKE_SIDES      6
 #define SIZE            100000
 
-// void identify_identical(int values[], int n) {
-//     for (int i = 0; i < n; i++) {
-//         for (int j = i + 1; j < n; j++) {
-//             if (values[i] == values[j]) {
-//                 printf("twin integers (%d) found\n", values[i]);
-//                 return;
-//             }
-//         }
-//     }
-//     printf("no two integers are the same\n");
-//     return;
-// }
-
 int identical_right(int snow1[], int snow2[], int start) {
     for (int offset = 0; offset < SNOWFLAKE_SIDES; offset++) {
         if (snow1[offset] != snow2[(start + offset) % SNOWFLAKE_SIDES])
@@ -45,7 +32,6 @@ int are_identical(int snow1[], int snow2[]) {
     return 0;
 }
 
-
 void identify_identical(int snowflakes[][SNOWFLAKE_SIDES], int n) {
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
@@ -53,37 +39,13 @@ void identify_identical(int snowflakes[][SNOWFLAKE_SIDES], int n) {
                 printf("Twin snowflakes found.\n");
                 return;
             }
-            // if (values[i] == values[j]) {
-            //     printf("twin integers (%d) found\n", values[i]);
-            //     return;
-            // }
         }
     }
     printf("No two snowflakes are alike.\n");
     return;
 }
+
 int main(void) {
-
-    //int numbers[SNOWFLAKE_SIDES];
-    // int snow1[SNOWFLAKE_SIDES], snow2[SNOWFLAKE_SIDES];
-    // for (int i = 0; i < SNOWFLAKE_SIDES; i++) {
-    //     if (scanf("%d", &snow1[i]) != 1) {
-    //         fprintf(stderr, "invalid input\n");
-    //         return 1;
-    //     }
-    // }
-
-    // for (int i = 0; i < SNOWFLAKE_SIDES; i++) {
-    //     if (scanf("%d", &snow2[i]) != 1) {
-    //         fprintf(stderr, "invalid input\n");
-    //         return 1;
-    //     }
-    // }
-
-    //identify_identical(numbers, SNOWFLAKE_SIDES);
-    // printf("snowflakes are ");
-    // if (are_identical(snow1, snow2)) printf("the same\n");
-    // else printf("different\n");
 
     static int snowflakes[SIZE][6];
     int n;
