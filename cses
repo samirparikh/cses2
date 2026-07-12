@@ -237,12 +237,9 @@ cmd_new() {
   [ -d "$dir" ] && die "already exists: $dir"
   mkdir -p "$dir/tests"
   cat > "$dir/$base.c" <<EOF
-#include <stdio.h>
+// $category: $problem
 
-// $problem
-// https://cses.fi/problemset/
-//
-// Read from stdin, write the answer to stdout.
+#include <stdio.h>
 
 int main(void) {
 
