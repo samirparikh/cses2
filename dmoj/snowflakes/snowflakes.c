@@ -4,6 +4,13 @@
 #define SNOWFLAKE_SIDES      6
 #define SIZE            100000
 
+int hash(int snowflake[]) {
+    int sum = 0;
+    for (int i = 0; i < SNOWFLAKE_SIDES; i++)
+        sum += snowflake[i];
+    return sum % SIZE;
+}
+
 int identical_right(int snow1[], int snow2[], int start) {
     for (int offset = 0; offset < SNOWFLAKE_SIDES; offset++) {
         if (snow1[offset] != snow2[(start + offset) % SNOWFLAKE_SIDES])
