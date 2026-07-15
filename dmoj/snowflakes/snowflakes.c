@@ -45,19 +45,6 @@ int are_identical(int snow1[], int snow2[]) {
     return 0;
 }
 
-void identify_identical_original(int snowflakes[][SNOWFLAKE_SIDES], int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if (are_identical(snowflakes[i], snowflakes[j])) {
-                printf("Twin snowflakes found.\n");
-                return;
-            }
-        }
-    }
-    printf("No two snowflakes are alike.\n");
-    return;
-}
-
 void identify_identical(snowflake_node *snowflakes[]) {
     snowflake_node *node1, *node2;
     
