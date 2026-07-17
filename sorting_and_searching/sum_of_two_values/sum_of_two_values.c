@@ -51,7 +51,7 @@ int hash (int key) {
 }
 
 // insert one (key, position) pair into the table
-void insert(int key, int position) {
+void insert(long long key, int position) {
 
     int bucket = hash(key);
 
@@ -68,12 +68,12 @@ void insert(int key, int position) {
 
     // insert node at beginning of list
     new_node->next = table[bucket];
-    table[bucket] = new_node;
+    table[bucket]  = new_node;
 }
 
-int find_position(int key) {
+int find_position(long long key) {
 
-    int bucket   = hash(key);
+    int bucket    = hash(key);
 
     Node *current = table[bucket];
 
@@ -101,7 +101,7 @@ void destroy_table(void) {
             current = next;
         }
     }
-    printf("memory freed\n");
+    // printf("memory freed\n");
 }
 
 int main(void) {
@@ -124,15 +124,39 @@ int main(void) {
         insert(numbers[i], i + 1);
     }
 
-    printf("\nSearch for: ");
+    // printf("searching for target sum of %lld...\n", target_sum);
+    // printf("\nSearch for: ");
 
-    long long target;
-    if (scanf("%lld", &target) != 1) {
-        fprintf(stderr, "invalid input\n");
-        return 1;
+    // long long target;
+    // if (scanf("%lld", &target) != 1) {
+    //     fprintf(stderr, "invalid input\n");
+    //     return 1;
+    // }
+
+    // if (!search(target)) printf("%lld not found\n", target);
+
+    int pair_found = 0;
+    // assuming we find a pair whose sum is the target:
+    // index1 represents the position of the first integer
+    // index2 represents the position of the second integer
+    int index1 = 0, index2;
+    //long long target;
+
+    // while loop only needs to check up to the second to last number
+    // (array_size - 2) because if it makes up a valid pair, the other number
+    // in the pair would have to be the last number in the array (array_size - 1)
+    while (index1 < array_size - 1) {
+        // printf("numbers[%d] = %lld; searching for %lld\n", index1, numbers[index1], target_sum-numbers[index1]);
+        index2 = find_position(target_sum - numbers[index1]);
+        if (index2 && index1 + 1 != index2) {
+            printf("%d %d\n", index1 + 1, index2);
+            pair_found = 1;
+            break;
+        }
+        index1++;
     }
 
-    if (!search(target)) printf("%lld not found\n", target);
+    if (!pair_found) printf("IMPOSSIBLE\n");
 
     destroy_table();
 
