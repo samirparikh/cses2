@@ -1,8 +1,140 @@
 // Sorting and Searching: Sum of Two Values
 
 #include <stdio.h>
+#include <stdlib.h>
+
+#define TABLE_SIZE 1000
+
+/* Basic data structure will be:
+
+             search for key = 348238
+                       │
+                       ▼
+           hash(348238) % TABLE_SIZE
+                       │
+                       ▼
+                  bucket #8
+                       │
+                       ▼
+      +-------------------------------+
+      | 838 → 348238 → 5788 → NULL    |
+      +-------------------------------+
+                │
+                ▼
+        Compare actual keys:
+        838 == 348238?    No
+        348238 == 348238? Yes
+
+*/
+
+/* One node in one linked list:
+Node
++------------------+
+| key              |
+| position         |
+| next  -----------+----> another Node
++------------------+
+*/
+typedef struct Node {
+    int     key;                // integer we need
+    int     position;           // the order it appeared (1st, 2nd, ...)
+    struct  Node *next;         // next node in this bucket
+} Node;
+
+// define hash table as an array (buckets) of pointers
+// each array element points to head of linked list (or NULL)
+Node *table[TABLE_SIZE] = {NULL};
+
+// simple hash function
+int hash (int key) {
+    return key % TABLE_SIZE;
+}
+
+// insert one (key, position) pair into the table
+void insert(int key, int position) {
+
+    int bucket = hash(key);
+
+    // Allocate memory for the new node
+    Node *new_node = malloc(sizeof(Node));
+
+    if (new_node == NULL) {
+        fprintf(stderr, "Out of memory\n");
+        exit(EXIT_FAILURE);
+    }
+
+    new_node->key      = key;
+    new_node->position = position;
+
+    // insert node at beginning of list
+    new_node->next = table[bucket];
+    table[bucket] = new_node;
+}
+
+int search(int key) {
+
+    int bucket = hash(key);
+    int found  = 0;
+
+    Node *current = table[bucket];
+
+    while (current != NULL) {
+        if (current->key == key) {
+            printf("found %d at position %d\n", key, current->position);
+            found = 1;
+        }
+
+        current = current->next;
+    }
+
+    return found;
+}
+
+// free allocated memory
+void destroy_table(void) {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        Node *current = table[i];
+
+        while (current != NULL) {
+            Node *next = current->next;
+            free(current);
+            current = next;
+        }
+    }
+    printf("memory freed\n");
+}
 
 int main(void) {
+    int         array_size;
+    long long   target_sum;
+
+    if (scanf("%d %lld", &array_size, &target_sum) != 2) {
+        fprintf(stderr, "invalid input");
+        return 1;
+    }
+
+    long long numbers[array_size];
+
+    for (int i = 0; i < array_size; i++) {
+        if (scanf("%lld", &numbers[i]) != 1) {
+            fprintf(stderr, "invalid input");
+            return 1;
+        }
+
+        insert(numbers[i], i + 1);
+    }
+
+    printf("\nSearch for: ");
+
+    long long target;
+    if (scanf("%lld", &target) != 1) {
+        fprintf(stderr, "invalid input\n");
+        return 1;
+    }
+
+    if (!search(target)) printf("%lld not found\n", target);
+
+    destroy_table();
 
     return 0;
 }
