@@ -71,23 +71,23 @@ void insert(int key, int position) {
     table[bucket] = new_node;
 }
 
-int search(int key) {
+int find_position(int key) {
 
-    int bucket = hash(key);
-    int found  = 0;
+    int bucket   = hash(key);
 
     Node *current = table[bucket];
 
     while (current != NULL) {
         if (current->key == key) {
-            printf("found %d at position %d\n", key, current->position);
-            found = 1;
+            // printf("found %d at position %d\n", key, current->position);
+            // found = 1;
+            return current->position;
         }
 
         current = current->next;
     }
 
-    return found;
+    return 0;
 }
 
 // free allocated memory
