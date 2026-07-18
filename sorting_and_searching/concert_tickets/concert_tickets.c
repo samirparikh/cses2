@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_PRICE 1000000001
+
 int compare_long_longs(const void *a, const void *b) {
     long long x = *(const long long *)a;
     long long y = *(const long long *)b;
@@ -43,6 +45,20 @@ int main(void) {
 
     for (int i = 0; i < num_tickets; i++) printf("%lld ", tickets[i]);
     printf("\n");
+
+    for (int customer = 0; customer < num_customers; customer++) {
+        int ticket = 0;
+        while (tickets[ticket] > customers[customer] && ticket < num_tickets) {
+            ticket++;
+        }
+        if (ticket < num_tickets) {
+            printf("%lld\n", tickets[ticket]);
+            tickets[ticket] = MAX_PRICE;
+        }
+        else {
+            printf("-1\n");
+        }
+    }
 
     return 0;
 }
