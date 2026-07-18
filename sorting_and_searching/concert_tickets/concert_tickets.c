@@ -43,8 +43,8 @@ int main(void) {
     // reverse sort tickets
     qsort(tickets, num_tickets, sizeof(tickets[0]), compare_long_longs);
 
-    for (int i = 0; i < num_tickets; i++) printf("%lld ", tickets[i]);
-    printf("\n");
+    // for (int i = 0; i < num_tickets; i++) printf("%lld ", tickets[i]);
+    // printf("\n");
 
     for (int customer = 0; customer < num_customers; customer++) {
         int ticket = 0;
