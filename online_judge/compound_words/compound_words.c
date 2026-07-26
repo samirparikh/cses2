@@ -143,5 +143,18 @@ int main(void) {
 
     identify_compound_words(words, hash_table, total);
 
+    /* free words[total] */
+    for (int i = 0; i < total ; i++) free(words[i]);
+
+    /* free word_node pointers */
+    for (int i = 0; i < (1 << NUM_BITS); i++) {
+        word_node *current = hash_table[i];
+        while (current != NULL) {
+            word_node *next_node = current->next;
+            free(current);
+            current = next_node;
+        }
+    }
+
     return 0;
 }
