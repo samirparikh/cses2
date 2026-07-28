@@ -134,6 +134,31 @@ int main(void) {
         long long target_number = target_sum - numbers[index1];
         if (target_number > 0) {  // target numbers are greater than zero
             int index2 = find_position(target_number);
+
+            /*
+             * This condition checks that the matching number is not the same element.
+
+             * For example, suppose:
+             * 
+             * target_sum = 10
+             * numbers = [5, 3, 7]
+             * 
+             * When examining the first element (5),
+             * 
+             * target_number = 10 - 5 = 5;
+             * 
+             * The hash table contains 5, but it's the same 5 you're currently looking at.
+             * 
+             * Without
+             * 
+             * index1 + 1 != index2
+             * 
+             * your program would incorrectly report
+             * 
+             * 1 1
+             * 
+             * even though the problem requires distinct positions.
+             */
             if (index2 && index1 + 1 != index2) {
                 printf("%d %d\n", index1 + 1, index2);
                 pair_found = 1;
