@@ -159,12 +159,24 @@ void add_to_hash_table(password_node *hash_table[], char *find) {
 
 }
 
+int already_added(char all_substrings[][MAX_PASSWORD + 1],
+                  int total_substrings, char *find) {
+    int i;
+    for (i = 0; i < total_substrings; i++)
+        if (strcmp(all_substrings[i], find) == 0)
+            return 1;
+    return 0;
+}
+
 int main(void) {
 
     static password_node *hash_table[1 << NUM_BITS] = { NULL };
-    int num_ops, op, op_type, i, j;
+    int num_ops, op, op_type;
+    long unsigned int i, j;
     char password[MAX_PASSWORD + 1], substring[MAX_PASSWORD + 1];
     password_node *password_ptr;
+    int total_substrings;
+    char all_substrings[MAX_PASSWORD * MAX_PASSWORD][MAX_PASSWORD + 1];
 
     if (scanf("%d", &num_ops) != 1) {
         fprintf(stderr, "invalid input\n");
@@ -178,11 +190,17 @@ int main(void) {
         }
 
         if (op_type == 1) {     // insert new user passwd into hash table
+            total_substrings = 0;
             for (i = 0; i < strlen(password); i++)
                 for (j = i; j < strlen(password); j++) {
-                    strncpy(substring, &password[i], j - i + 1);
+                    memcpy(substring, &password[i], j - i + 1);
                     substring[j - i + 1] = '\0';
-                    add_to_hash_table(hash_table, substring);
+
+                    if (!already_added(all_substrings, total_substrings, substring)) {
+                        add_to_hash_table(hash_table, substring);
+                        strcpy(all_substrings[total_substrings], substring);
+                        total_substrings++;
+                    }
                 }
 
         } else {                // query hash table
