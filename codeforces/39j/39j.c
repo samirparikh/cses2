@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define MAX_LENGTH 256
+#define MAX_LENGTH 1000000
 
 bool read_line(char *buffer, size_t length) {
     if (fgets(buffer, length, stdin) == NULL) {
@@ -33,9 +33,6 @@ int main(void) {
 
     size_t s1_len = strlen(s1);
 
-    // printf("s1 = %s\n", s1);
-    // printf("s2 = %s\n", s2);
-
     /*
     * Assume that s1, the longer string, is:
     * 
@@ -47,9 +44,7 @@ int main(void) {
     // compare removal of first character (position = 0) of s1
     // destination, starting position of source, number of characters
     strncpy(suf, s1 + position + 1, s1_len - position - 1);
-    // printf("initial suffix is %s\n", suf);
     if (strcmp(suf, s2) == 0) {
-        // printf("%s and %s are the same\n", suf, s2);
         positions[total] = position + 1;
         total++;
     }
@@ -64,12 +59,9 @@ int main(void) {
         size_t len = s1_len - position - 1;
         memcpy(suf, s1 + position + 1, len);
         suf[len] = '\0';
-        // printf("prefix = %s, suffix = %s\n", pre, suf);
         size_t remaining_space = sizeof(pre) - strlen(suf) - 1;
         strncat(pre, suf, remaining_space);
-        // printf("comparing %s with %s\n", pre, s2);
         if (strcmp(pre, s2) == 0) {
-            // printf("%s and %s are the same\n", pre, s2);
             positions[total] = position + 1;
             total++;
         }
@@ -78,9 +70,7 @@ int main(void) {
     // compare removal of last character (position = length - 1)
     memcpy(pre, s1, position);
     pre[position] = '\0';
-    // printf("last prefix to compare is %s\n", pre);
     if (strcmp(pre, s2) == 0) {
-        // printf("%s and %s are the same\n", pre, s2);
         positions[total] = position + 1;
         total++;
     }
