@@ -33,8 +33,14 @@ int main(void) {
 
     qsort(puzzles, num_puzzles, sizeof(puzzles[0]), compare_ints);
 
-    for (int i = 0; i < num_puzzles; i++) printf("%d ", puzzles[i]);
-    printf("\n");
+    int least_difference = 1000;
+
+    for (int i = 0; i <= num_puzzles - num_students; i++) {
+        if (puzzles[i + num_students - 1] - puzzles[i] < least_difference)
+            least_difference = puzzles[i + num_students - 1] - puzzles[i];
+    }
+
+    printf("%d\n", least_difference);
 
     return 0;
 }
