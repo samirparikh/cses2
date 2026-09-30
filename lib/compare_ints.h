@@ -10,6 +10,8 @@
  *     0 if they are equal
  *   > 0 if *a should come after *b
  *
+ * The functions as written below sort in ascending order.
+ *
  * The functions are `static inline` so that this header can be
  * included from any translation unit without producing duplicate
  * symbols at link time. Each .c file that includes this header
