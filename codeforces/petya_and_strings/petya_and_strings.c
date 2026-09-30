@@ -15,17 +15,18 @@ int main(void) {
     s1[strcspn(s1, "\n")] = '\0';
     s2[strcspn(s2, "\n")] = '\0';
     
-    // size_t length = strlen(s1);
-
-    // while (*s1 && *s2) {
-    //     printf("%c - %c\n", *s1, *s2);
-    //     s1++;
-    //     s2++;
-    // }
-    
     for (size_t i = 0; s1[i]; i++) {
-        printf("%c - %c\n", s1[i], s2[i]);
+        if (tolower(s1[i]) < tolower(s2[i])) {
+            printf("-1\n");
+            return 0;
+        }
+        if (tolower(s1[i]) > tolower(s2[i])) {
+            printf("1\n");
+            return 0;
+        }
     }
+
+    printf("0\n");
 
     return 0;
 }
