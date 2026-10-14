@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_CUSTOMERS 200000
-
 typedef struct event {
     unsigned long time;
     int change;
@@ -22,6 +20,7 @@ int compare_time(const void *a, const void *b) {
 int main(void) {
 
     unsigned long num_customers;
+    unsigned long current_count = 0;
     unsigned long max_cust_count = 0;
 
     if (scanf("%lu", &num_customers) != 1) {
@@ -51,8 +50,9 @@ int main(void) {
     qsort(events, num_events, sizeof(events[0]), compare_time);
 
     for (unsigned long i = 0; i < num_events; i++) {
-        printf("event %lu at time %lu is %d\n",
-               i, events[i].time, events[i].change);
+        current_count += events[i].change;
+        if (current_count > max_cust_count)
+            max_cust_count = current_count;
     }
 
     printf("%lu\n", max_cust_count);
