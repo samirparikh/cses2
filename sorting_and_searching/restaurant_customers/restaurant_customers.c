@@ -2,7 +2,12 @@
 
 #include <stdio.h>
 
-#define MAX_TIMES 1000000
+#define MAX_CUSTOMERS 200000
+
+typedef struct event {
+    unsigned long time;
+    int change;
+} event;
 
 int array_max(int *a, size_t length) {
     int max = a[0];
@@ -14,7 +19,7 @@ int array_max(int *a, size_t length) {
 
 int main(void) {
 
-    int times[MAX_TIMES] = {0};
+    event events[MAX_CUSTOMERS] = {0};
 
     int num_customers;
 
