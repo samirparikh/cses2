@@ -40,15 +40,9 @@ int main(void) {
         movies[i].end   = end;
     }
 
+    // sort movies based on end time
     qsort(movies, num_movies, sizeof(movies[0]), compare_time);
 
-    for (int i = 0; i < num_movies; i++) {
-        printf("movie %d starts at %d and ends at %d\n",
-               i, movies[i].start, movies[i].end);
-    }
-
-    // count is the number of movies we've watched.  At a minimum, we can
-    // watch the first movie (movies[0])
     int count = 1;
 
     // watched is the index of the last movie we watched
