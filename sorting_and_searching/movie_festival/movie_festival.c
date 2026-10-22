@@ -29,30 +29,26 @@ int main(void) {
 
     movie movies[num_movies];
 
-    unsigned long long enter, exit;
+    int start, end;
 
-    for (unsigned long i = 0; i < num_events; i++) {
-        if (scanf("%llu %llu", &enter, &exit) != 2) {
+    for (int i = 0; i < num_movies; i++) {
+        if (scanf("%d %d", &start, &end) != 2) {
             fprintf(stderr, "invalid input\n");
             return 1;
         }
 
-        events[i].time   = enter;
-        events[i].change = 1;
-        i++;
-        events[i].time   = exit;
-        events[i].change = -1;
+        movies[i].start = start;
+        movies[i].end   = end;
     }
 
-    qsort(events, num_events, sizeof(events[0]), compare_time);
+    qsort(movies, num_movies, sizeof(movies[0]), compare_time);
 
-    for (unsigned long i = 0; i < num_events; i++) {
-        current_count += events[i].change;
-        if (current_count > max_cust_count)
-            max_cust_count = current_count;
+    for (int i = 0; i < num_movies; i++) {
+        printf("movie %d starts at %d and ends at %d\n",
+               i, movies[i].start, movies[i].end);
     }
 
-    printf("%lu\n", max_cust_count);
+    printf("%d\n", count);
 
     return 0;
 }
