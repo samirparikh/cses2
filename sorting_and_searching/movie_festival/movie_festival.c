@@ -20,7 +20,6 @@ int compare_time(const void *a, const void *b) {
 int main(void) {
 
     int num_movies;
-    int count = 0;
 
     if (scanf("%d", &num_movies) != 1) {
         fprintf(stderr, "invalid input\n");
@@ -46,6 +45,21 @@ int main(void) {
     for (int i = 0; i < num_movies; i++) {
         printf("movie %d starts at %d and ends at %d\n",
                i, movies[i].start, movies[i].end);
+    }
+
+    // count is the number of movies we've watched.  At a minimum, we can
+    // watch the first movie (movies[0])
+    int count = 1;
+
+    // watched is the index of the last movie we watched
+    int watched = 0;
+
+    // let's start examing the rest of the movies, starting with movie[1]
+    for (int i = 1; i < num_movies; i++) {
+        if (movies[i].start >= movies[watched].end) {
+            watched = i;
+            count++;
+        }
     }
 
     printf("%d\n", count);
