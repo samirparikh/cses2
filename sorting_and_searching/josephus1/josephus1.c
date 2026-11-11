@@ -45,7 +45,32 @@ int main(void) {
         tail = new_node;            // update tail to new node
     }
 
+    tail->next = head;
+    Node *current = head;
+    Node *next_node;
 
+    // printf("test loop...\n");
+
+    while (current != NULL) {
+
+        // current represents the current node
+        // let's find the next node
+        next_node = current->next;
+        // print the value in the next node
+        printf("%d ", next_node->value);
+        // check to see if only one node remains (it points to itself)
+        if (next_node == current) break;
+        // point the current node to whatever the next node points to
+        current->next = next_node->next;
+        // free the next_node now
+        free(next_node);
+        // advance the current node pointer
+        current = current->next;
+
+    }
+
+
+/*
     printf("\ntraversing list...\n");
 
     Node *cur = head;
@@ -55,6 +80,7 @@ int main(void) {
         free(cur);                  // free the current node
         cur = next;                 // set current node to next node
     }
+*/
 
     return EXIT_SUCCESS;
 }
