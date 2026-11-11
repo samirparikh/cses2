@@ -1,5 +1,4 @@
 #include <stdio.h>
-// #include <stdbool.h>
 #include <stdlib.h>
 
 typedef struct Node {
@@ -7,31 +6,7 @@ typedef struct Node {
     struct Node* next;
 } Node;
 
-/*
-void traverse_list(Node *cur) {
-    while (cur != NULL) {
-        printf("%d\n", cur->value); // print value of current node
-        Node *next = cur->next;     // get the next node
-        cur = next;                 // set current node to next node
-    }
-}
-
-bool get_number(int *number) {
-    printf("Enter a number (Ctrl-D to end): ");
-    int result = scanf("%d", number);
-
-    if (result == EOF) return false;
-
-    if (result != 1) {
-        fprintf(stderr, "invalid input\n");
-        exit(EXIT_FAILURE);
-    }
-    return true;
-}
-*/
-
 int main(void) {
-    // int number;
     int n;
 
     if (scanf("%d", &n) !=1) {
@@ -43,7 +18,6 @@ int main(void) {
     Node *head = NULL;
     Node *tail = NULL;
 
-    // while (get_number(&number)) {
     for (int number = 1; number <= n; number++) {
         Node *new_node = malloc(sizeof(*new_node));
         if (new_node == NULL) {
@@ -73,9 +47,7 @@ int main(void) {
 
 
     printf("\ntraversing list...\n");
-    // traverse_list(head);
 
-    // printf("and again\n");
     Node *cur = head;
     while (cur != NULL) {
         printf("%d\n", cur->value); // print value of current node
