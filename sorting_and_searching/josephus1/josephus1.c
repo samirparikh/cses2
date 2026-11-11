@@ -49,8 +49,6 @@ int main(void) {
     Node *current = head;
     Node *next_node;
 
-    // printf("test loop...\n");
-
     while (current != NULL) {
 
         // current represents the current node
@@ -68,19 +66,6 @@ int main(void) {
         current = current->next;
 
     }
-
-
-/*
-    printf("\ntraversing list...\n");
-
-    Node *cur = head;
-    while (cur != NULL) {
-        printf("%d\n", cur->value); // print value of current node
-        Node *next = cur->next;     // get the next node
-        free(cur);                  // free the current node
-        cur = next;                 // set current node to next node
-    }
-*/
 
     return EXIT_SUCCESS;
 }
